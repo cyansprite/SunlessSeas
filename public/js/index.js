@@ -1,6 +1,6 @@
-const _TOWN_CODES = ["A", "D", "G", "J", "M", "P", "S", "V", "Y", "AB", "AE", "AH", "AK"];
-const _BUY_CODES  = ["B", "E", "H", "K", "N", "Q", "T", "W", "Z", "AC", "AF", "AI", "AL"];
-const _SELL_CODES = ["C", "F", "I", "L", "O", "R", "U", "X", "AA", "AD", "AG", "AJ", "AM"];
+const _TOWN_CODES = ["A", "D", "G", "J", "M", "P", "S", "V", "Y", "AB", "AE", "AH", "AK", "AN"];
+const _BUY_CODES  = ["B", "E", "H", "K", "N", "Q", "T", "W", "Z", "AC", "AF", "AI", "AL", "AO"];
+const _SELL_CODES = ["C", "F", "I", "L", "O", "R", "U", "X", "AA", "AD", "AG", "AJ", "AM", "AP"];
 
 var _towns;
 var _origPrices;
@@ -109,16 +109,19 @@ function ProcessExcel(data) {
         }
 
         for (var v = 0; v < _TOWN_CODES.length; v++) {
-            if (currentRow[_SELL_CODES[v]] > t.max)
+            const s = parseInt(currentRow[_SELL_CODES[v]]);
+            const b = parseInt(currentRow[_BUY_CODES[v]]);
+
+            if (s > t.max)
             {
                 t.townMax = _towns[_TOWN_CODES[v]];
-                t.max = currentRow[_SELL_CODES[v]];
+                t.max = s;
             }
 
-            if (currentRow[_BUY_CODES[v]] < t.min)
+            if (b < t.min)
             {
                 t.townMin = _towns[_TOWN_CODES[v]];
-                t.min = currentRow[_BUY_CODES[v]];
+                t.min = b;
             }
         }
 

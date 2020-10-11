@@ -1,0 +1,84 @@
+@charset "UTF-8";
+@import url("https://fonts.googleapis.com/css2?family=Alegreya&display=swap");
+body {
+  font-family: 'Alegreya', serif;
+  font-size: 16px;
+  background: url(../img/SunlessSea.jpg) no-repeat #001111;
+  background-size: cover; }
+
+table {
+  color: #111122;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 50%;
+  min-width: 300px; }
+
+td, th {
+  border: 1px solid #ddd;
+  padding: 2px; }
+
+th {
+  font-size: 22px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  text-align: center;
+  background-color: #447777;
+  color: white; }
+
+tr:nth-child(even) {
+  background-color: #f2f2f2aa; }
+
+tr:nth-child(odd) {
+  background-color: #ddddddaa; }
+
+tr:hover {
+  background: url(../img/SunlessSea.jpg) no-repeat #cfcfe6;
+  color: white; }
+
+th[data-sort-direction="0"]:hover {
+  border: 1px solid;
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.2);
+  outline-color: rgba(255, 255, 255, 0);
+  outline-offset: 15px;
+  text-shadow: 1px 1px 2px #427388; }
+
+th[data-sort-direction="1"]:hover {
+  border: 1px solid;
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.2);
+  outline-color: rgba(255, 255, 255, 0);
+  outline-offset: 15px;
+  text-shadow: 1px 1px 2px #427388; }
+
+th[data-sort-direction="2"]:hover {
+  border: 1px solid;
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.2);
+  outline-color: rgba(255, 255, 255, 0);
+  outline-offset: 15px;
+  text-shadow: 1px 1px 2px #427388; }
+
+th[data-sort-direction="0"]:after {
+  content: "∙";
+  display: inline-block;
+  width: 10px;
+  height: 10px; }
+
+th[data-sort-direction="2"]:after {
+  content: "▴";
+  display: inline-block;
+  width: 10px;
+  height: 10px; }
+
+th[data-sort-direction="1"]:after {
+  content: "▾";
+  display: inline-block;
+  width: 10px;
+  height: 10px; }
+
+th[data-sort-direction="0"] {
+  cursor: pointer; }
+
+th[data-sort-direction="1"] {
+  cursor: pointer; }
+
+th[data-sort-direction="2"] {
+  cursor: pointer; }

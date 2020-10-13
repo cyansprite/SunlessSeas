@@ -7,7 +7,7 @@ const app = express();
 const port = process.env.PORT || "8000";
 
 /** App Configuration */
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(__dirname));
 
 /** Routes Definitions */
 app.get("/", (req, res) => {

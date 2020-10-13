@@ -1,11 +1,12 @@
-const _TOWN_CODES = ["A", "D", "G", "J", "M", "P", "S", "V", "Y", "AB", "AE", "AH", "AK", "AN"];
-const _BUY_CODES  = ["B", "E", "H", "K", "N", "Q", "T", "W", "Z", "AC", "AF", "AI", "AL", "AO"];
-const _SELL_CODES = ["C", "F", "I", "L", "O", "R", "U", "X", "AA", "AD", "AG", "AJ", "AM", "AP"];
+const _TOWN_CODES = ["A", "D", "G", "J", "M", "P", "S", "V", "Y", "AB", "AE", "AH", "AK", "AN", "AQ", "AT", "AW"];
+const _BUY_CODES  = ["B", "E", "H", "K", "N", "Q", "T", "W", "Z", "AC", "AF", "AI", "AL", "AO", "AR", "AU", "AX"];
+const _SELL_CODES = ["C", "F", "I", "L", "O", "R", "U", "X", "AA", "AD", "AG", "AJ", "AM", "AP", "AS", "AV", "AY"];
 
 var _towns;
 var _origPrices;
 var _bestPrices;
-var _table = null;
+var _bestPriceTable = null;
+var _townTable = null;
 var _sortDirection = -1;
 var _sortedType = 0;
 var _itemHeaderElement;
@@ -33,16 +34,70 @@ function sort(type) {
     makeTable();
 }
 
+function makeTownTable(key) {
+    var towns = document.getElementById("maindiv");
+
+    if (_townTable != null)
+        towns.removeChild(_townTable);
+
+    _townTable = document.createElement("table");
+    _townTable.className = "towns";
+    _townTable.border = "1";
+
+    var caption = document.createElement("caption");
+    caption.innerHTML = key;
+    _townTable.appendChild(caption);
+
+    var row = _townTable.insertRow(-1);
+
+    var headerCell = document.createElement("TH");
+    headerCell.innerHTML = "Town";
+    row.appendChild(headerCell);
+
+    headerCell = document.createElement("TH");
+    headerCell.innerHTML = "Buy";
+    row.appendChild(headerCell);
+
+    headerCell = document.createElement("TH");
+    headerCell.innerHTML = "Sell";
+    row.appendChild(headerCell);
+
+    for (const key2 in _allItems[key]) {
+        console.log(`${key2}: ${JSON.stringify(_allItems[key][key2])}`);
+
+        var town = _allItems[key][key2];
+        if (isNaN(town.Buy) && isNaN(town.Sell))
+            continue;
+
+        var row = _townTable.insertRow(-1);
+        var cell = row.insertCell(-1);
+        cell.innerHTML = key2;
+
+        cell = row.insertCell(-1);
+        cell.innerHTML = town.Buy;
+
+        cell = row.insertCell(-1);
+        cell.innerHTML = town.Sell;
+    }
+
+    towns.appendChild(_townTable);
+}
+
 function makeTable() {
-    var dvExcel = document.getElementById("dvExcel");
+    var bestPrices = document.getElementById("maindiv");
 
-    if (_table != null)
-        dvExcel.removeChild(_table);
+    if (_bestPriceTable != null)
+        bestPrices.removeChild(_bestPriceTable);
 
-    _table = document.createElement("table");
-    _table.border = "1";
+    _bestPriceTable = document.createElement("table");
+    _bestPriceTable.className = "bestPrices";
+    _bestPriceTable.border = "1";
 
-    var row = _table.insertRow(-1);
+    var caption = document.createElement("caption");
+    caption.innerHTML = "Best Prices";
+    _bestPriceTable.appendChild(caption);
+
+    var row = _bestPriceTable.insertRow(-1);
 
     _itemHeaderElement = document.createElement("TH");
     _itemHeaderElement.setAttribute("data-sort-direction", _sortedType%3);
@@ -61,11 +116,14 @@ function makeTable() {
     row.appendChild(headerCell);
 
     for (var i = 0; i < _bestPrices.length; i++) {
-        var row = _table.insertRow(-1);
-        console.log(_bestPrices[i]);
+        var row = _bestPriceTable.insertRow(-1);
 
         var cell = row.insertCell(-1);
-        cell.innerHTML = _bestPrices[i].name;
+        const name = _bestPrices[i].name;
+        cell.innerHTML = name;
+        cell.addEventListener("click", function() {
+            makeTownTable(name);
+        }, false);
 
         cell = row.insertCell(-1);
         if (_bestPrices[i].min != Number.MAX_SAFE_INTEGER)
@@ -80,8 +138,7 @@ function makeTable() {
             cell.innerHTML = "N/A";
     }
 
-    dvExcel.innerHTML = "";
-    dvExcel.appendChild(_table);
+    bestPrices.appendChild(_bestPriceTable);
 }
 
 
@@ -91,6 +148,7 @@ function ProcessExcel(data) {
     var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
 
     _bestPrices = [];
+    _allItems = {};
     _towns = excelRows[0];
 
     // 0 is _towns, 1 is Buy/Sell, 2 is the juice
@@ -108,23 +166,29 @@ function ProcessExcel(data) {
             min:     Number.MAX_SAFE_INTEGER
         }
 
+        var item = {};
+
         for (var v = 0; v < _TOWN_CODES.length; v++) {
             const s = parseInt(currentRow[_SELL_CODES[v]]);
             const b = parseInt(currentRow[_BUY_CODES[v]]);
+            const town = _towns[_TOWN_CODES[v]];
 
             if (s > t.max)
             {
-                t.townMax = _towns[_TOWN_CODES[v]];
+                t.townMax = town;
                 t.max = s;
             }
 
             if (b < t.min)
             {
-                t.townMin = _towns[_TOWN_CODES[v]];
+                t.townMin = town;
                 t.min = b;
             }
+
+            item[town] = {"Buy" : b, "Sell" : s};
         }
 
+        _allItems[name] = item;
         _bestPrices.push(t);
     }
 

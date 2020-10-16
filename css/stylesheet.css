@@ -49,7 +49,7 @@ tr:hover {
   background: url(../img/SunlessSea.jpg) no-repeat #010122;
   color: white; }
 
-th[data-sort-type="3"]:after {
+th[data-sort-type="0"]:after {
   content: "∙";
   display: inline-block;
   width: 10px;
